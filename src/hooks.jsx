@@ -1,0 +1,4 @@
+import {useEffect,useRef,useState} from 'react'
+export function useInView(th=.2){const r=useRef(null),[v,setV]=useState(false);useEffect(()=>{const o=new IntersectionObserver(([e])=>e.isIntersecting&&setV(true),{threshold:th});r.current&&o.observe(r.current);return()=>o.disconnect()},[]);return[r,v]}
+export function Reveal({children,d=0,className='',as:Tag='div',...p}){const[r,v]=useInView();return <Tag ref={r} className={'rv '+(v?'in ':'')+className} style={{transitionDelay:d+'ms'}} {...p}>{children}</Tag>}
+export function Count({to,dec=0,dur=1300}){const[r,v]=useInView(),[n,setN]=useState(0);useEffect(()=>{if(!v)return;let s,raf;const f=t=>{s=s||t;const k=Math.min((t-s)/dur,1);setN(to*(1-Math.pow(1-k,3)));if(k<1)raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f);return()=>cancelAnimationFrame(raf)},[v,to]);return <span ref={r}>{n.toFixed(dec)}</span>}
